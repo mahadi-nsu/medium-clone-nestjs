@@ -6,8 +6,7 @@ import { TagEntity } from './../../tag.entity';
 import { tagStub } from '../stubs/tag.stub';
 
 //**  this is the mock data
-//! it connects the ocks folder tag.service.ts
-
+// ! it connects the ocks folder tag.service.ts
 jest.mock('../../tag.service');
 
 describe('Tag Controller', () => {
@@ -36,7 +35,7 @@ describe('Tag Controller', () => {
       let tags: { tags: string[] };
 
       beforeEach(async () => {
-        tags = await tagController.findAll();
+        tags = await tagService.findAll();
       });
 
       test('then it should call usersService', async () => {
