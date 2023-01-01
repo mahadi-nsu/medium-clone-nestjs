@@ -7,6 +7,8 @@ import { sign } from 'jsonwebtoken';
 import { JWT_SECRET } from 'src/config';
 import { UserResponseInterface } from './types/userResponse.interface';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { LoginDto } from './dto/userLogin.dto';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -31,6 +33,29 @@ export class UserService {
     const newUser = new UserEntity();
     Object.assign(newUser, createUserDto);
     return await this.userRepository.save(newUser);
+  }
+
+  async login(loginDto: LoginDto): Promise<UserEntity> {
+    const user = await this.userRepository.findOneBy({
+      email: loginDto.email,
+    });
+    if (!user) {
+      throw new HttpException(
+        'Credentials are not valid',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    // console.log(user);
+
+    const isPasswordCorrect = await compare(loginDto.password, user.password);
+    if (!isPasswordCorrect) {
+      throw new HttpException(
+        'Credentials are not valid',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    return user;
   }
 
   generateToken(user: UserEntity): string {
