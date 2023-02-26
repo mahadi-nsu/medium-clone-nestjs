@@ -36,8 +36,11 @@ export class UserService {
   }
 
   async login(loginDto: LoginDto): Promise<UserEntity> {
-    const user = await this.userRepository.findOneBy({
-      email: loginDto.email,
+    const user = await this.userRepository.findOne({
+      where: {
+        email: loginDto.email,
+      },
+      select: ['id', 'username', 'email', 'bio', 'image', 'password'],
     });
     if (!user) {
       throw new HttpException(
@@ -55,11 +58,12 @@ export class UserService {
       );
     }
 
+    delete user.password;
     return user;
   }
 
   generateToken(user: UserEntity): string {
-    console.log('user from token generate function', user);
+    // console.log('user from token generate function', user);
     return sign(
       {
         id: user.id,
