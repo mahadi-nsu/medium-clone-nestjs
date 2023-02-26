@@ -62,6 +62,10 @@ export class UserService {
     return user;
   }
 
+  async findById(id: number): Promise<UserEntity> {
+    return this.userRepository.findOneBy({ id });
+  }
+
   generateToken(user: UserEntity): string {
     // console.log('user from token generate function', user);
     return sign(
