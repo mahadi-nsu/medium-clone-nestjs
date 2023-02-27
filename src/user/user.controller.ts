@@ -5,8 +5,9 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UserService } from './user.service';
 import { UserResponseInterface } from './types/userResponse.interface';
 import { ValidationPipe } from '@nestjs/common/pipes';
-import { Request } from 'express';
 import { ExpressRequest } from 'src/types/expressRequest.interface';
+import { User } from './decorators/user.decorator';
+import { UserEntity } from './user.entity';
 
 @Controller()
 export class UserController {
@@ -37,8 +38,9 @@ export class UserController {
   @Get('user')
   async currentUser(
     @Req() request: ExpressRequest,
+    @User() user: UserEntity,
   ): Promise<UserResponseInterface> {
-    console.log('request data', request.user);
+    console.log('request data from decorator', user);
     return this.userService.buildUserResponse(request.user);
   }
 }
